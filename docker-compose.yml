@@ -1,6 +1,18 @@
 version: '3.3'
 
-services: 
+services:
+  api: 
+    build: .
+    image: hotel_manager_api
+    ports: 
+      - '3000:3000'
+    volumes: 
+      - .:/usr/src
+      - /usr/src/node_modules
+    command: npm run start:dev
+    container_name: api
+    depends_on: 
+      - database
   database: 
     image: postgres:13
     environment:
@@ -11,3 +23,4 @@ services:
       - '5432:5432'
     volumes: 
       - ./postgres_data:/var/lib/postgresql/data
+    container_name: db
