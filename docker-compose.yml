@@ -4,7 +4,7 @@ services:
     image: hotel_manager_api
     build:
       context: .
-      dockerfile: development.Dockerfile
+      dockerfile: ./dist/development.Dockerfile
     ports:
       - '4000:4000'
     volumes:
