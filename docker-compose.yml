@@ -1,0 +1,29 @@
+services:
+  api:
+    container_name: api
+    image: hotel_manager_api
+    build:
+      context: .
+      dockerfile: ./dist/development.Dockerfile
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/usr/src
+      - /usr/src/node_modules
+    depends_on:
+      - database
+    command: npm run start:dev
+  database:
+    container_name: db
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: {}
