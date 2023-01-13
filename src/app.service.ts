@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getWelcome() {
+    return {
+      message: 'Welcome to Hotel Manager API',
+      info: 'Go to /docs to learn more',
+    };
   }
 }
