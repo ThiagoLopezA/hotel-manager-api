@@ -10,30 +10,26 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRoomDto, UpdateRoomDto } from '../dtos/rooms.dto';
+import { RoomsService } from '../services/rooms.service';
 
 @ApiTags('Rooms')
 @Controller('rooms')
 export class RoomsController {
+  constructor(private roomsService: RoomsService) {}
+
   @Get()
   getRooms() {
-    return {
-      message: 'All rooms',
-    };
+    return this.roomsService.findAll();
   }
 
   @Get('/:id')
   getRoom(@Param('id', ParseIntPipe) id: number) {
-    return {
-      message: `Room #${id}`,
-    };
+    return this.roomsService.findOne(id);
   }
 
   @Post()
   createRoom(@Body() payload: CreateRoomDto) {
-    return {
-      message: 'Room created',
-      room: payload,
-    };
+    return this.roomsService.create(payload);
   }
 
   @Put('/:id')
@@ -41,16 +37,11 @@ export class RoomsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateRoomDto,
   ) {
-    return {
-      message: `Room #${id} updated`,
-      updatedRoom: payload,
-    };
+    return this.roomsService.update(id, payload);
   }
 
   @Delete('/:id')
   deleteRoom(@Param('id', ParseIntPipe) id: number) {
-    return {
-      message: `Room #${id} deleted`,
-    };
+    return this.roomsService.delete(id);
   }
 }
