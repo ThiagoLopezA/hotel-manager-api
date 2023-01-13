@@ -8,7 +8,10 @@ import {
   ParseIntPipe,
   Body,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { CreateRoomDto, UpdateRoomDto } from '../dtos/rooms.dto';
 
+@ApiTags('Rooms')
 @Controller('rooms')
 export class RoomsController {
   @Get()
@@ -26,7 +29,7 @@ export class RoomsController {
   }
 
   @Post()
-  createRoom(@Body() payload: any) {
+  createRoom(@Body() payload: CreateRoomDto) {
     return {
       message: 'Room created',
       room: payload,
@@ -34,7 +37,10 @@ export class RoomsController {
   }
 
   @Put('/:id')
-  updateRoom(@Param('id', ParseIntPipe) id: number, @Body() payload: any) {
+  updateRoom(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateRoomDto,
+  ) {
     return {
       message: `Room #${id} updated`,
       updatedRoom: payload,
