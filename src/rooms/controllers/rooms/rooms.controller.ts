@@ -9,8 +9,8 @@ import {
   Body,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateRoomDto, UpdateRoomDto } from '../dtos/rooms.dto';
-import { RoomsService } from '../services/rooms.service';
+import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
+import { RoomsService } from '../../services/rooms.service';
 
 @ApiTags('Rooms')
 @Controller('rooms')
