@@ -1,11 +1,46 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { Room } from '../../entities/room.entity';
+import { RoomCategory } from 'src/rooms/entities/room-category.entity';
+import { CreateRoomCategoryDto } from 'src/rooms/dtos/rooms-categories.dto';
 
 @Injectable()
 export class RoomsService {
   private rooms: Room[] = [];
   private countId: number = this.rooms.length;
+
+  constructor(
+    @InjectRepository(RoomCategory)
+    private roomCategoryRepo: Repository<RoomCategory>,
+  ) {}
+
+  findAllCategories() {
+    return this.roomCategoryRepo.find();
+  }
+
+  findOneCategory(id: number) {
+    const category = this.roomCategoryRepo.findOneBy({ id });
+    if (!category) throw new NotFoundException('Category not found');
+    return category;
+  }
+
+  createCategory(payload: CreateRoomCategoryDto) {
+    const category = this.roomCategoryRepo.create(payload);
+    return this.roomCategoryRepo.save(category);
+  }
+
+  deleteCategory(id: number) {
+    return this.roomCategoryRepo.delete(id);
+  }
+
+  async updateCategory(id: number, changes: CreateRoomCategoryDto) {
+    const category = await this.findOneCategory(id);
+    this.roomCategoryRepo.merge(category, changes);
+    return this.roomCategoryRepo.save(category);
+  }
 
   findAll(): Room[] {
     return this.rooms;
