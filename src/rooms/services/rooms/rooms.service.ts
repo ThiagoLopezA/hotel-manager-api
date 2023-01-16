@@ -5,7 +5,10 @@ import { Repository } from 'typeorm';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { Room } from '../../entities/room.entity';
 import { RoomCategory } from 'src/rooms/entities/room-category.entity';
-import { CreateRoomCategoryDto } from 'src/rooms/dtos/rooms-categories.dto';
+import {
+  CreateRoomCategoryDto,
+  UpdateRoomCategoryDto,
+} from 'src/rooms/dtos/rooms-categories.dto';
 
 @Injectable()
 export class RoomsService {
@@ -36,7 +39,7 @@ export class RoomsService {
     return this.roomCategoryRepo.delete(id);
   }
 
-  async updateCategory(id: number, changes: CreateRoomCategoryDto) {
+  async updateCategory(id: number, changes: UpdateRoomCategoryDto) {
     const category = await this.findOneCategory(id);
     this.roomCategoryRepo.merge(category, changes);
     return this.roomCategoryRepo.save(category);
