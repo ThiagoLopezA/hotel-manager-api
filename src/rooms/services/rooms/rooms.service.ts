@@ -4,11 +4,11 @@ import { Repository } from 'typeorm';
 
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { Room } from '../../entities/room.entity';
-import { RoomCategory } from 'src/rooms/entities/room-category.entity';
+import { RoomCategory } from '../../entities/room-category.entity';
 import {
   CreateRoomCategoryDto,
   UpdateRoomCategoryDto,
-} from 'src/rooms/dtos/rooms-categories.dto';
+} from '../../dtos/rooms-categories.dto';
 
 @Injectable()
 export class RoomsService {

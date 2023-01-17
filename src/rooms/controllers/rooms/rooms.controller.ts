@@ -12,7 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   CreateRoomCategoryDto,
   UpdateRoomCategoryDto,
-} from 'src/rooms/dtos/rooms-categories.dto';
+} from '../../dtos/rooms-categories.dto';
 
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { RoomsService } from '../../services/rooms/rooms.service';
