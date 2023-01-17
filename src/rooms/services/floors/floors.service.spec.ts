@@ -53,7 +53,7 @@ describe('FloorsService', () => {
   });
 
   it('should find a floor by id', async () => {
-    expect(await service.findOne(1)).toEqual({ id: 1, number: 1 });
+    expect(await service.findOne({ id: 1 })).toEqual({ id: 1, number: 1 });
   });
 
   it('should delete a floor by id', async () => {

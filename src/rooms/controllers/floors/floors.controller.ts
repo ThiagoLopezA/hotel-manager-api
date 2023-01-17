@@ -1,8 +1,10 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -19,12 +21,13 @@ export class FloorsController {
   @Get()
   async findAll() {
     const floors = await this.floorsService.findAll();
-    return { data: floors };
+    return floors;
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    const floor = await this.floorsService.findOne(id);
+    const floor = await this.floorsService.findOne({ id });
+    if (!floor) throw new NotFoundException();
     return floor;
   }
 
@@ -32,19 +35,22 @@ export class FloorsController {
 
   @Post()
   async create(@Body() body: CreateFloorDto) {
-    const floor = await this.floorsService.create(body);
-    return floor;
+    const floor = await this.floorsService.findOne({ number: body.number });
+    if (floor) throw new ConflictException('This entity already exists');
+    return await this.floorsService.create(body);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    const floor = await this.floorsService.delete(id);
-    return floor;
+    const floor = await this.floorsService.findOne({ id });
+    if (!floor) throw new NotFoundException();
+    return await this.floorsService.delete(id);
   }
 
   @Put(':id')
   async update(@Param('id') id: number, @Body() body: UpdateFloorDto) {
-    const floor = await this.floorsService.update(id, body);
-    return floor;
+    const floor = await this.floorsService.findOne({ id });
+    if (!floor) throw new NotFoundException();
+    return await this.floorsService.update(id, body);
   }
 }
