@@ -5,7 +5,7 @@ export class Room {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', unique: true })
   number: number;
 
   @Column({ type: 'int' })
