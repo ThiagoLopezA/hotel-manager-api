@@ -5,33 +5,32 @@ import { FloorsController } from './floors.controller';
 describe('FloorsController', () => {
   let controller: FloorsController;
 
+  const mockData = [
+    {
+      number: 1,
+      id: 1,
+    },
+  ];
+
   const mockFloorsService = {
     create: jest.fn((dto) => {
       return {
         ...dto,
-        id: 1,
+        id: 2,
       };
     }),
     update: jest.fn((number, dto) => {
-      const mock = {
-        number: 2,
-        id: 1,
-      };
+      const mock = mockData.find((f) => f.number === number);
       return { ...mock, ...dto };
     }),
     findAll: jest.fn(() => {
-      return [
-        {
-          number: 1,
-          id: 1,
-        },
-      ];
+      return mockData;
     }),
-    findOne: jest.fn((id) => {
-      return { id, number: 1 };
+    findOne: jest.fn(({ id }) => {
+      return mockData.find((f) => f.id === id);
     }),
     delete: jest.fn((id) => {
-      return { id, number: 1 };
+      return { affected: 1, raw: [] };
     }),
   };
 
@@ -54,7 +53,7 @@ describe('FloorsController', () => {
   describe('Create method', () => {
     it('should create a floor', async () => {
       const payload = {
-        number: 1,
+        number: 2,
       };
       expect(await controller.create(payload)).toEqual({
         number: payload.number,
@@ -67,11 +66,11 @@ describe('FloorsController', () => {
   describe('Update method', () => {
     it('should update a floor', async () => {
       const payload = {
-        number: 1,
+        number: 3,
       };
       expect(await controller.update(1, payload)).toEqual({
         number: payload.number,
-        id: 1,
+        id: expect.any(Number),
       });
       expect(mockFloorsService.update).toBeCalledWith(1, payload);
     });
@@ -79,30 +78,22 @@ describe('FloorsController', () => {
 
   describe('Get all method', () => {
     it('should get all floors', async () => {
-      const mock = {
-        number: 1,
-        id: 1,
-      };
-      expect(await controller.findAll()).toEqual({ data: [mock] });
+      expect(await controller.findAll()).toEqual(mockData);
       expect(mockFloorsService.findAll).toBeCalled();
     });
   });
 
   describe('Get one method', () => {
     it('should get one floor', async () => {
-      const mock = {
-        number: 1,
-        id: 1,
-      };
-      expect(await controller.findOne(1)).toEqual(mock);
-      expect(mockFloorsService.findOne).toBeCalledWith(1);
+      expect(await controller.findOne(1)).toEqual(mockData[0]);
+      expect(mockFloorsService.findOne).toBeCalledWith({ id: 1 });
     });
   });
 
   describe('Delete one method', () => {
     it('should delete one floor', async () => {
-      expect(await controller.delete(1)).toEqual({ id: 1, number: 1 });
-      expect(mockFloorsService.findOne).toBeCalledWith(1);
+      expect(await controller.delete(1)).toEqual({ affected: 1, raw: [] });
+      expect(mockFloorsService.delete).toBeCalledWith(1);
     });
   });
 });
