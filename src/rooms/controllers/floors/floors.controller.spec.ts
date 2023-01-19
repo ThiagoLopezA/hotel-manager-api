@@ -55,7 +55,8 @@ describe('FloorsController', () => {
       const payload = {
         number: 2,
       };
-      expect(await controller.create(payload)).toEqual({
+      const result = await controller.create(payload);
+      expect(result.data).toEqual({
         number: payload.number,
         id: expect.any(Number),
       });
@@ -68,7 +69,8 @@ describe('FloorsController', () => {
       const payload = {
         number: 3,
       };
-      expect(await controller.update(1, payload)).toEqual({
+      const result = await controller.update(1, payload);
+      expect(result.data).toEqual({
         number: payload.number,
         id: expect.any(Number),
       });
@@ -78,21 +80,24 @@ describe('FloorsController', () => {
 
   describe('Get all method', () => {
     it('should get all floors', async () => {
-      expect(await controller.findAll()).toEqual(mockData);
+      const result = await controller.findAll();
+      expect(result.data).toEqual(mockData);
       expect(mockFloorsService.findAll).toBeCalled();
     });
   });
 
   describe('Get one method', () => {
     it('should get one floor', async () => {
-      expect(await controller.findOne(1)).toEqual(mockData[0]);
+      const result = await controller.findOne(1);
+      expect(result.data).toEqual(mockData[0]);
       expect(mockFloorsService.findOne).toBeCalledWith({ id: 1 });
     });
   });
 
   describe('Delete one method', () => {
     it('should delete one floor', async () => {
-      expect(await controller.delete(1)).toEqual({ affected: 1, raw: [] });
+      const result = await controller.delete(1);
+      expect(result.code).toEqual(200);
       expect(mockFloorsService.delete).toBeCalledWith(1);
     });
   });
