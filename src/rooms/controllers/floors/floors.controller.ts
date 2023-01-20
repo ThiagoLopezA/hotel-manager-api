@@ -1,10 +1,8 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -12,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateFloorDto, UpdateFloorDto } from '../../dtos/floors.dto';
 import { FloorsService } from '../../services/floors/floors.service';
-import { ApiResponse } from '../../../common';
+import { ApiResponse, Code } from '../../../common';
 
 @ApiTags('Floors')
 @Controller('floors')
@@ -28,7 +26,11 @@ export class FloorsController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const floor = await this.floorsService.findOne({ id });
-    if (!floor) throw new NotFoundException();
+    if (!floor)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
     return ApiResponse.success(floor);
   }
 
@@ -37,7 +39,11 @@ export class FloorsController {
   @Post()
   async create(@Body() body: CreateFloorDto) {
     const floor = await this.floorsService.findOne({ number: body.number });
-    if (floor) throw new ConflictException('This entity already exists');
+    if (floor)
+      return ApiResponse.error(
+        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
+        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
+      );
     const newFloor = await this.floorsService.create(body);
     return ApiResponse.created(newFloor);
   }
@@ -45,7 +51,11 @@ export class FloorsController {
   @Delete(':id')
   async delete(@Param('id') id: number) {
     const floor = await this.floorsService.findOne({ id });
-    if (!floor) throw new NotFoundException();
+    if (!floor)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
     await this.floorsService.delete(id);
     return ApiResponse.success();
   }
@@ -53,7 +63,11 @@ export class FloorsController {
   @Put(':id')
   async update(@Param('id') id: number, @Body() body: UpdateFloorDto) {
     const floor = await this.floorsService.findOne({ id });
-    if (!floor) throw new NotFoundException();
+    if (!floor)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
     const updated = await this.floorsService.update(id, body);
     return ApiResponse.success(updated);
   }
