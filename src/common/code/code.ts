@@ -34,6 +34,11 @@ export class Code {
     message: 'Access denied.',
   };
 
+  public static NOT_FOUND_ERROR: CodeDescription = {
+    code: 404,
+    message: 'Not found.',
+  };
+
   public static INTERNAL_ERROR: CodeDescription = {
     code: 500,
     message: 'Internal error.',
