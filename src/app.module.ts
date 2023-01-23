@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { RoomsModule } from './rooms/rooms.module';
 import { enviroments } from './enviroments';
 import { DatabaseModule } from './database/database.module';
+import { ClientsModule } from './clients/clients.module';
 import config from './config';
 
 @Module({
@@ -25,6 +26,7 @@ import config from './config';
         POSTGRES_HOST: Joi.string().required(),
       }),
     }),
+    ClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
