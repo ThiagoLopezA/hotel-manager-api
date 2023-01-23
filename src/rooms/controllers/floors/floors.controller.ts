@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -24,7 +25,7 @@ export class FloorsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     const floor = await this.floorsService.findOne({ id });
     if (!floor)
       return ApiResponse.error(
@@ -49,7 +50,7 @@ export class FloorsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     const floor = await this.floorsService.findOne({ id });
     if (!floor)
       return ApiResponse.error(
@@ -61,7 +62,10 @@ export class FloorsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() body: UpdateFloorDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateFloorDto,
+  ) {
     const floor = await this.floorsService.findOne({ id });
     if (!floor)
       return ApiResponse.error(
