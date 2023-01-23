@@ -23,7 +23,14 @@ export class RoomsService {
       where: { id },
       relations: ['floor'],
     });
-    if (!room) throw new NotFoundException('Room not found');
+    return room;
+  }
+
+  async findOneBy(key: UpdateRoomDto): Promise<Room> {
+    const room = await this.roomsRepo.findOne({
+      where: key,
+      relations: ['floor'],
+    });
     return room;
   }
 
@@ -37,8 +44,7 @@ export class RoomsService {
     return await this.roomsRepo.save(newRoom);
   }
 
-  async update(id: number, changes: UpdateRoomDto): Promise<Room> {
-    const room = await this.findOne(id);
+  async update(room: Room, changes: UpdateRoomDto): Promise<Room> {
     if (changes.floorId) {
       const floor = await this.floorsRepo.findOneBy({ id: changes.floorId });
       if (!floor) throw new NotFoundException('Floor not found');
@@ -48,9 +54,7 @@ export class RoomsService {
     return this.roomsRepo.save(room);
   }
 
-  async delete(id: number): Promise<Room> {
-    const room = await this.findOne(id);
-    await this.roomsRepo.delete(room.id);
-    return room;
+  async delete(id: number) {
+    return await this.roomsRepo.delete(id);
   }
 }

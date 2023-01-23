@@ -11,6 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { RoomsService } from '../../services/rooms/rooms.service';
+import { ApiResponse } from '../../../common/api/apiResponse';
+import { Code } from '../../../common/code/code';
 
 @ApiTags('Rooms')
 @Controller('rooms')
@@ -18,30 +20,60 @@ export class RoomsController {
   constructor(private roomsService: RoomsService) {}
 
   @Get()
-  getRooms() {
-    return this.roomsService.findAll();
+  async getRooms() {
+    const rooms = await this.roomsService.findAll();
+    return ApiResponse.success(rooms);
   }
 
   @Get('/:id')
-  getRoom(@Param('id', ParseIntPipe) id: number) {
+  async getRoom(@Param('id', ParseIntPipe) id: number) {
+    const room = await this.roomsService.findOne(id);
+    if (!room)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
     return this.roomsService.findOne(id);
   }
 
   @Post()
-  createRoom(@Body() payload: CreateRoomDto) {
-    return this.roomsService.create(payload);
+  async createRoom(@Body() payload: CreateRoomDto) {
+    const roomAlreadyExists = await this.roomsService.findOneBy({
+      number: payload.number,
+    });
+    if (roomAlreadyExists)
+      return ApiResponse.error(
+        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
+        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
+      );
+    const newRoom = await this.roomsService.create(payload);
+    return ApiResponse.success(newRoom);
   }
 
   @Put('/:id')
-  updateRoom(
+  async updateRoom(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateRoomDto,
   ) {
-    return this.roomsService.update(id, payload);
+    const room = await this.roomsService.findOne(id);
+    if (!room)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    const updatedRoom = await this.roomsService.update(room, payload);
+    return ApiResponse.success(updatedRoom);
   }
 
   @Delete('/:id')
-  deleteRoom(@Param('id', ParseIntPipe) id: number) {
-    return this.roomsService.delete(id);
+  async deleteRoom(@Param('id', ParseIntPipe) id: number) {
+    const room = await this.roomsService.findOne(id);
+    if (!room)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    await this.roomsService.delete(id);
+    return ApiResponse.success(room);
   }
 }
