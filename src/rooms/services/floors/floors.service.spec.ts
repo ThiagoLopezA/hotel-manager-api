@@ -11,9 +11,9 @@ describe('FloorsService', () => {
       .fn()
       .mockImplementation((dto) => Promise.resolve({ id: 1, ...dto })),
     find: jest.fn().mockImplementation(() => Promise.resolve([])),
-    findOneBy: jest.fn().mockImplementation((obj) => {
-      const { id } = obj;
-      return { id, number: 1 };
+    findOne: jest.fn().mockImplementation((obj) => {
+      const id = obj.where.id;
+      return { id, number: 1, rooms: [] };
     }),
     delete: jest.fn().mockImplementation((id) => {
       return { id, number: 1 };
@@ -53,17 +53,22 @@ describe('FloorsService', () => {
   });
 
   it('should find a floor by id', async () => {
-    expect(await service.findOne({ id: 1 })).toEqual({ id: 1, number: 1 });
+    expect(await service.findOne({ id: 1 })).toEqual({
+      id: 1,
+      number: 1,
+      rooms: [],
+    });
   });
 
   it('should delete a floor by id', async () => {
     expect(await service.delete(1)).toEqual({ id: 1, number: 1 });
   });
-  // see later
+
   it('should update a floor by id', async () => {
     expect(await service.update(1, { number: 2 })).toEqual({
       id: 1,
       number: 1,
+      rooms: [],
     });
   });
 });
