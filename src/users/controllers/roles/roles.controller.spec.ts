@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRolesService } from '../../services/user-roles/user-roles.service';
-import { UserRolesController } from './user-roles.controller';
+import { RolesService } from '../../services/roles/roles.service';
+import { RolesController } from './roles.controller';
 
 describe('UserRolesController', () => {
-  let controller: UserRolesController;
+  let controller: RolesController;
 
   const mockData = [{ name: 'administrator', id: 1 }];
-  const mockUsersRolesService = {
+  const mockRolesService = {
     create: jest.fn((dto) => {
       return {
         ...dto,
@@ -30,14 +30,14 @@ describe('UserRolesController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserRolesController],
-      providers: [UserRolesService],
+      controllers: [RolesController],
+      providers: [RolesService],
     })
-      .overrideProvider(UserRolesService)
-      .useValue(mockUsersRolesService)
+      .overrideProvider(RolesService)
+      .useValue(mockRolesService)
       .compile();
 
-    controller = module.get<UserRolesController>(UserRolesController);
+    controller = module.get<RolesController>(RolesController);
   });
 
   it('should be defined', () => {
