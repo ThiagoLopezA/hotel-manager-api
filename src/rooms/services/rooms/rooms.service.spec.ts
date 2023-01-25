@@ -37,32 +37,6 @@ describe('RoomsService', () => {
     }),
   };
 
-  const mockCategories = [
-    {
-      id: 1,
-      name: 'mockCategory',
-      description: 'a mocked category',
-      price: 666.66,
-    },
-  ];
-  const mockRoomCategoryRepository = {
-    create: jest.fn().mockImplementation((dto) => dto),
-    save: jest
-      .fn()
-      .mockImplementation((dto) => Promise.resolve({ id: 1, ...dto })),
-    find: jest.fn().mockImplementation(() => mockCategories),
-    findOneBy: jest
-      .fn()
-      .mockImplementation(({ id }) => mockCategories.find((c) => c.id === id)),
-    merge: jest.fn().mockImplementation((category, changes) => ({
-      ...category,
-      ...changes,
-    })),
-    delete: jest.fn().mockImplementation((id) => {
-      return mockCategories.find((c) => c.id === id);
-    }),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -74,10 +48,6 @@ describe('RoomsService', () => {
         {
           provide: getRepositoryToken(Floor),
           useValue: mockFloorRepository,
-        },
-        {
-          provide: getRepositoryToken(RoomCategory),
-          useValue: mockRoomCategoryRepository,
         },
       ],
     }).compile();
@@ -141,31 +111,5 @@ describe('RoomsService', () => {
 
   it('should delete a room by id', async () => {
     expect(await service.delete(2)).toEqual({ id: 2, number: 1 });
-  });
-
-  // _____ROOM_CATEGORY:
-  it('should create a new room category record and return it', async () => {
-    expect(await service.createCategory(mockCategories[0])).toEqual(
-      mockCategories[0],
-    );
-  });
-
-  it('should return all room categories', async () => {
-    expect(await service.findAllCategories()).toEqual(mockCategories);
-  });
-
-  it('should return a room category by id', async () => {
-    expect(await service.findOneCategory(1)).toEqual(mockCategories[0]);
-  });
-
-  it('should update a room category by id', async () => {
-    expect(await service.updateCategory(1, { name: 'mockCategory' })).toEqual({
-      ...mockCategories[0],
-      name: 'mockCategory',
-    });
-  });
-
-  it('should delete a room category by id', async () => {
-    expect(await service.deleteCategory(1)).toEqual(mockCategories[0]);
   });
 });

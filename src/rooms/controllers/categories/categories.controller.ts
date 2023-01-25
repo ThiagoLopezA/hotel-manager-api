@@ -9,41 +9,73 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
-import { CategoriesService } from 'src/rooms/services/categories/categories.service';
+import { CategoriesService } from '../../services/categories/categories.service';
 import {
   CreateRoomCategoryDto,
   UpdateRoomCategoryDto,
 } from '../../dtos/rooms-categories.dto';
+import { ApiResponse } from '../../../common/api/apiResponse';
+import { Code } from '../../../common/code/code';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Post()
-  createCategory(@Body() payload: CreateRoomCategoryDto) {
-    return this.categoriesService.create(payload);
+  async createCategory(@Body() payload: CreateRoomCategoryDto) {
+    const categoryAlreadyExits = await this.categoriesService.findOneBy({
+      name: payload.name,
+    });
+    if (categoryAlreadyExits)
+      return ApiResponse.error(
+        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
+        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
+      );
+    const category = await this.categoriesService.create(payload);
+    return ApiResponse.created(category);
   }
 
   @Get()
   async getCategories() {
-    return await this.categoriesService.findAll();
+    const categories = await this.categoriesService.findAll();
+    return ApiResponse.success(categories);
   }
 
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.findOne(id);
+  async getCategory(@Param('id', ParseIntPipe) id: number) {
+    const category = await this.categoriesService.findOne(id);
+    if (!category)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    return ApiResponse.success(category);
   }
 
   @Put(':id')
-  updateCategory(
+  async updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateRoomCategoryDto,
   ) {
-    return this.categoriesService.update(id, payload);
+    const category = await this.categoriesService.findOne(id);
+    if (!category)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    const updated = this.categoriesService.update(category.id, payload);
+    return ApiResponse.success(updated);
   }
 
   @Delete(':id')
-  deleteCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.delete(id);
+  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
+    const category = await this.categoriesService.findOne(id);
+    if (!category)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    await this.categoriesService.delete(category.id);
+    return ApiResponse.success(category);
   }
 }
