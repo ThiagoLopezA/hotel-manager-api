@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { RoomCategory } from '../../entities/room-category.entity';
 import { Floor } from '../../entities/floor.entity';
 import { Room } from '../../entities/room.entity';
 import { RoomsService } from './rooms.service';

@@ -12,7 +12,6 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { RoomsService } from '../../services/rooms/rooms.service';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
-
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
 

@@ -18,12 +18,9 @@ describe('CategoriesController', () => {
     create: jest.fn((dto) => ({ ...dto, id: 2 })),
     findAll: jest.fn(() => mockCategories),
     findOne: jest.fn((id) => mockCategories.find((e) => e.id === id)),
-    findOneBy: jest.fn((obj) => {
-      console.log(obj);
-      const found = mockCategories.find((e) => e.name === obj.name);
-      console.log(found);
-      return found;
-    }),
+    findOneBy: jest.fn((obj) =>
+      mockCategories.find((e) => e.name === obj.name),
+    ),
     delete: jest.fn((id) => mockCategories.find((e) => e.id === id)),
     update: jest.fn((id, changes) => {
       const category = mockCategories.find((e) => e.id === id);
