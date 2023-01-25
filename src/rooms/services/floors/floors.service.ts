@@ -14,7 +14,10 @@ export class FloorsService {
   }
 
   async findOne(params: object) {
-    const floor = await this.floorRepo.findOneBy(params);
+    const floor = await this.floorRepo.findOne({
+      where: params,
+      relations: ['rooms'],
+    });
     return floor;
   }
 

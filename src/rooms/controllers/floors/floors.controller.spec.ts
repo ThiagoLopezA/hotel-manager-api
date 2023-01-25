@@ -29,7 +29,7 @@ describe('FloorsController', () => {
     findOne: jest.fn(({ id }) => {
       return mockData.find((f) => f.id === id);
     }),
-    delete: jest.fn((id) => {
+    delete: jest.fn(() => {
       return { affected: 1, raw: [] };
     }),
   };

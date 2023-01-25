@@ -2,9 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { Room } from '../../entities/room.entity';
 import { RoomCategory } from '../../entities/room-category.entity';
+import { Floor } from '../../entities/floor.entity';
+import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import {
   CreateRoomCategoryDto,
   UpdateRoomCategoryDto,
@@ -12,31 +13,71 @@ import {
 
 @Injectable()
 export class RoomsService {
-  private rooms: Room[] = [];
-  private countId: number = this.rooms.length;
-
   constructor(
+    @InjectRepository(Room) private roomsRepo: Repository<Room>,
+    @InjectRepository(Floor) private floorsRepo: Repository<Floor>,
     @InjectRepository(RoomCategory)
     private roomCategoryRepo: Repository<RoomCategory>,
   ) {}
 
-  findAllCategories() {
-    return this.roomCategoryRepo.find();
+  async create(data: CreateRoomDto): Promise<Room> {
+    const newRoom = this.roomsRepo.create(data);
+    if (data.floorId) {
+      const floor = await this.floorsRepo.findOneBy({ id: data.floorId });
+      if (!floor) throw new NotFoundException('Floor not found');
+      newRoom.floor = floor;
+    }
+    return await this.roomsRepo.save(newRoom);
   }
 
-  findOneCategory(id: number) {
-    const category = this.roomCategoryRepo.findOneBy({ id });
+  async findAll(): Promise<Room[]> {
+    return await this.roomsRepo.find({ relations: ['floor'] });
+  }
+
+  async findOne(id: number): Promise<Room> {
+    const room = await this.roomsRepo.findOne({
+      where: { id },
+      relations: ['floor'],
+    });
+    return room;
+  }
+
+  async findOneBy(key: UpdateRoomDto): Promise<Room> {
+    const room = await this.roomsRepo.findOne({
+      where: key,
+      relations: ['floor'],
+    });
+    return room;
+  }
+
+  async update(room: Room, changes: UpdateRoomDto): Promise<Room> {
+    if (changes.floorId) {
+      const floor = await this.floorsRepo.findOneBy({ id: changes.floorId });
+      if (!floor) throw new NotFoundException('Floor not found');
+      room.floor = floor;
+    }
+    this.roomsRepo.merge(room, changes);
+    return this.roomsRepo.save(room);
+  }
+
+  async delete(id: number) {
+    return await this.roomsRepo.delete(id);
+  }
+
+  // _____ROOM_CATEGORY:
+  async createCategory(payload: CreateRoomCategoryDto) {
+    const category = this.roomCategoryRepo.create(payload);
+    return await this.roomCategoryRepo.save(category);
+  }
+
+  async findAllCategories() {
+    return await this.roomCategoryRepo.find();
+  }
+
+  async findOneCategory(id: number) {
+    const category = await this.roomCategoryRepo.findOneBy({ id });
     if (!category) throw new NotFoundException('Category not found');
     return category;
-  }
-
-  createCategory(payload: CreateRoomCategoryDto) {
-    const category = this.roomCategoryRepo.create(payload);
-    return this.roomCategoryRepo.save(category);
-  }
-
-  deleteCategory(id: number) {
-    return this.roomCategoryRepo.delete(id);
   }
 
   async updateCategory(id: number, changes: UpdateRoomCategoryDto) {
@@ -45,36 +86,7 @@ export class RoomsService {
     return this.roomCategoryRepo.save(category);
   }
 
-  findAll(): Room[] {
-    return this.rooms;
-  }
-
-  findOne(id: number): Room {
-    const room = this.rooms.find((item) => item.id === id);
-    if (!room) throw new NotFoundException('Room not found');
-    return room;
-  }
-
-  create(payload: CreateRoomDto): Room {
-    this.countId += 1;
-    const newRoom = {
-      id: this.countId,
-      ...payload,
-    };
-    this.rooms.push(newRoom);
-    return newRoom;
-  }
-
-  update(id: number, payload: UpdateRoomDto): Room {
-    const room = this.findOne(id);
-    const index = this.rooms.findIndex((item) => item.id === room.id);
-    this.rooms[index] = { ...room, ...payload };
-    return this.rooms[index];
-  }
-
-  delete(id: number): Room {
-    const room = this.findOne(id);
-    this.rooms = this.rooms.filter((item) => item.id !== room.id);
-    return room;
+  async deleteCategory(id: number) {
+    return await this.roomCategoryRepo.delete(id);
   }
 }

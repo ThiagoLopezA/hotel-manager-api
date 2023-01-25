@@ -1,22 +1,23 @@
 import { IsNumber, IsPositive, IsNotEmpty } from 'class-validator';
-// import { PartialType } from '@nestjs/mapped-types';
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoomDto {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
+  @ApiProperty()
   readonly number: number;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
+  @ApiProperty()
   readonly floorId: number;
 
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
-  readonly categoryId: number;
+  // @IsNumber()
+  // @IsPositive()
+  // @IsNotEmpty()
+  // readonly categoryId: number;
 }
 
 export class UpdateRoomDto extends PartialType(CreateRoomDto) {}
