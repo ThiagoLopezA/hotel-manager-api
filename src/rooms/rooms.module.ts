@@ -8,10 +8,12 @@ import { FloorsController } from './controllers/floors/floors.controller';
 import { FloorsService } from './services/floors/floors.service';
 import { Floor } from './entities/floor.entity';
 import { RoomCategory } from './entities/room-category.entity';
+import { CategoriesService } from './services/categories/categories.service';
+import { CategoriesController } from './controllers/categories/categories.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Room, Floor, RoomCategory])],
-  controllers: [RoomsController, FloorsController],
-  providers: [RoomsService, FloorsService],
+  controllers: [RoomsController, FloorsController, CategoriesController],
+  providers: [RoomsService, FloorsService, CategoriesService],
 })
 export class RoomsModule {}

@@ -3,21 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Room } from '../../entities/room.entity';
-import { RoomCategory } from '../../entities/room-category.entity';
 import { Floor } from '../../entities/floor.entity';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
-import {
-  CreateRoomCategoryDto,
-  UpdateRoomCategoryDto,
-} from '../../dtos/rooms-categories.dto';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room) private roomsRepo: Repository<Room>,
     @InjectRepository(Floor) private floorsRepo: Repository<Floor>,
-    @InjectRepository(RoomCategory)
-    private roomCategoryRepo: Repository<RoomCategory>,
   ) {}
 
   async create(data: CreateRoomDto): Promise<Room> {
@@ -62,31 +55,5 @@ export class RoomsService {
 
   async delete(id: number) {
     return await this.roomsRepo.delete(id);
-  }
-
-  // _____ROOM_CATEGORY:
-  async createCategory(payload: CreateRoomCategoryDto) {
-    const category = this.roomCategoryRepo.create(payload);
-    return await this.roomCategoryRepo.save(category);
-  }
-
-  async findAllCategories() {
-    return await this.roomCategoryRepo.find();
-  }
-
-  async findOneCategory(id: number) {
-    const category = await this.roomCategoryRepo.findOneBy({ id });
-    if (!category) throw new NotFoundException('Category not found');
-    return category;
-  }
-
-  async updateCategory(id: number, changes: UpdateRoomCategoryDto) {
-    const category = await this.findOneCategory(id);
-    this.roomCategoryRepo.merge(category, changes);
-    return this.roomCategoryRepo.save(category);
-  }
-
-  async deleteCategory(id: number) {
-    return await this.roomCategoryRepo.delete(id);
   }
 }
