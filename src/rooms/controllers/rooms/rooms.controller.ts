@@ -19,6 +19,20 @@ import { Code } from '../../../common/code/code';
 export class RoomsController {
   constructor(private roomsService: RoomsService) {}
 
+  @Post()
+  async createRoom(@Body() payload: CreateRoomDto) {
+    const roomAlreadyExists = await this.roomsService.findOneBy({
+      number: payload.number,
+    });
+    if (roomAlreadyExists)
+      return ApiResponse.error(
+        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
+        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
+      );
+    const newRoom = await this.roomsService.create(payload);
+    return ApiResponse.created(newRoom);
+  }
+
   @Get()
   async getRooms() {
     const rooms = await this.roomsService.findAll();
@@ -33,21 +47,7 @@ export class RoomsController {
         Code.NOT_FOUND_ERROR.code,
         Code.NOT_FOUND_ERROR.message,
       );
-    return this.roomsService.findOne(id);
-  }
-
-  @Post()
-  async createRoom(@Body() payload: CreateRoomDto) {
-    const roomAlreadyExists = await this.roomsService.findOneBy({
-      number: payload.number,
-    });
-    if (roomAlreadyExists)
-      return ApiResponse.error(
-        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
-        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
-      );
-    const newRoom = await this.roomsService.create(payload);
-    return ApiResponse.success(newRoom);
+    return ApiResponse.success(room);
   }
 
   @Put('/:id')

@@ -12,6 +12,16 @@ export class RoomsService {
     @InjectRepository(Floor) private floorsRepo: Repository<Floor>,
   ) {}
 
+  async create(data: CreateRoomDto): Promise<Room> {
+    const newRoom = this.roomsRepo.create(data);
+    if (data.floorId) {
+      const floor = await this.floorsRepo.findOneBy({ id: data.floorId });
+      if (!floor) throw new NotFoundException('Floor not found');
+      newRoom.floor = floor;
+    }
+    return await this.roomsRepo.save(newRoom);
+  }
+
   async findAll(): Promise<Room[]> {
     return await this.roomsRepo.find({
       relations: ['floor'],
@@ -32,16 +42,6 @@ export class RoomsService {
       relations: ['floor'],
     });
     return room;
-  }
-
-  async create(data: CreateRoomDto): Promise<Room> {
-    const newRoom = this.roomsRepo.create(data);
-    if (data.floorId) {
-      const floor = await this.floorsRepo.findOneBy({ id: data.floorId });
-      if (!floor) throw new NotFoundException('Floor not found');
-      newRoom.floor = floor;
-    }
-    return await this.roomsRepo.save(newRoom);
   }
 
   async update(room: Room, changes: UpdateRoomDto): Promise<Room> {

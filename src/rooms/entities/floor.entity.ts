@@ -10,5 +10,5 @@ export class Floor {
   number: number;
 
   @OneToMany(() => Room, (room) => room.floor)
-  rooms: Room[];
+  rooms?: Room[];
 }
