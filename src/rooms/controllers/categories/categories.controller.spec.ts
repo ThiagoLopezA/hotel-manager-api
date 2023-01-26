@@ -51,6 +51,7 @@ describe('CategoriesController', () => {
         name: 'B',
         description: 'bla',
         price: 100,
+        rooms: [],
       };
       const result = await controller.createCategory(newCategory);
       expect(result.data).toEqual(newCategory);

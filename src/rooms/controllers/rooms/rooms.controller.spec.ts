@@ -47,13 +47,14 @@ describe('RoomsController', () => {
 
   describe('Create method', () => {
     it('should create a room', async () => {
-      const body = { number: 4, floorId: 2 };
+      const body = { number: 4, floorId: 2, categoryId: 1 };
       const result = await controller.createRoom(body);
       expect(result.code).toEqual(201);
       expect(result.data).toEqual({
         id: expect.any(Number),
         number: body.number,
         floorId: body.floorId,
+        categoryId: body.categoryId,
       });
       expect(mockRoomsService.create).toBeCalledWith(body);
     });

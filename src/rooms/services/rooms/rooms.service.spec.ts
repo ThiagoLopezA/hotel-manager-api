@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Floor } from '../../entities/floor.entity';
-import { Room } from '../../entities/room.entity';
+
 import { RoomsService } from './rooms.service';
+import { Room } from '../../entities/room.entity';
+import { Floor } from '../../entities/floor.entity';
+import { Category } from '../../entities/category.entity';
 
 describe('RoomsService', () => {
   let service: RoomsService;
@@ -46,6 +48,13 @@ describe('RoomsService', () => {
     }),
   };
 
+  const mockCategoryRepository = {
+    findOneBy: jest.fn().mockImplementation(({ id }) => ({
+      id,
+      name: 'Category A',
+    })),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -58,6 +67,10 @@ describe('RoomsService', () => {
           provide: getRepositoryToken(Floor),
           useValue: mockFloorRepository,
         },
+        {
+          provide: getRepositoryToken(Category),
+          useValue: mockCategoryRepository,
+        },
       ],
     }).compile();
 
@@ -69,7 +82,9 @@ describe('RoomsService', () => {
   });
 
   it('should crate a new room and return it', async () => {
-    expect(await service.create({ number: 2, floorId: 1 })).toEqual({
+    expect(
+      await service.create({ number: 2, floorId: 1, categoryId: 1 }),
+    ).toEqual({
       id: 2,
       number: 2,
       floorId: 1,
@@ -77,6 +92,11 @@ describe('RoomsService', () => {
         id: 1,
         number: 1,
       },
+      category: {
+        id: 1,
+        name: 'Category A',
+      },
+      categoryId: 1,
     });
   });
 
@@ -107,12 +127,19 @@ describe('RoomsService', () => {
   });
 
   it('should update a room', async () => {
-    const oldRoom = {
+    const oldRoom: Room = {
       id: 1,
       number: 1,
       floor: {
         id: 1,
         number: 1,
+      },
+      category: {
+        id: 1,
+        name: 'Category A',
+        description: 'bla bla',
+        price: 100,
+        rooms: [],
       },
     };
     expect(await service.update(oldRoom, { number: 3 })).toEqual(oldRoom);

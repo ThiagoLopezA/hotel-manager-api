@@ -6,27 +6,28 @@ import { Category } from '../../entities/category.entity';
 describe('CategoriesService', () => {
   let service: CategoriesService;
 
-  const mockCategories = [
-    {
-      id: 1,
-      name: 'mockCategory',
-      description: 'a mocked category',
-      price: 666.66,
-    },
-  ];
+  const mockCategories = [];
+
   const mockCategoriesRepository = {
     create: jest.fn().mockImplementation((dto) => dto),
     save: jest
       .fn()
       .mockImplementation((dto) => Promise.resolve({ id: 1, ...dto })),
-    find: jest.fn().mockImplementation(() => mockCategories),
+    find: jest.fn().mockImplementation(() => []),
+    findOne: jest.fn().mockImplementation(({ where: { id } }) => {
+      return { id, name: 'Category A' };
+    }),
     findOneBy: jest
       .fn()
       .mockImplementation(({ id }) => mockCategories.find((c) => c.id === id)),
-    merge: jest.fn().mockImplementation((category, changes) => ({
-      ...category,
-      ...changes,
-    })),
+    merge: jest.fn().mockImplementation((category, changes) => {
+      console.log(category, changes);
+
+      return {
+        ...category,
+        ...changes,
+      };
+    }),
     delete: jest.fn().mockImplementation((id) => {
       return mockCategories.find((c) => c.id === id);
     }),
@@ -51,21 +52,29 @@ describe('CategoriesService', () => {
   });
 
   it('should create a new room category record and return it', async () => {
-    expect(await service.create(mockCategories[0])).toEqual(mockCategories[0]);
+    const newCategory = {
+      name: 'Category B',
+      description: 'bla bla',
+      price: 100,
+    };
+    expect(await service.create(newCategory)).toEqual({
+      id: 1,
+      ...newCategory,
+    });
   });
 
   it('should return all room categories', async () => {
-    expect(await service.findAll()).toEqual(mockCategories);
+    expect(await service.findAll()).toEqual([]);
   });
 
   it('should return a room category by id', async () => {
-    expect(await service.findOne(1)).toEqual(mockCategories[0]);
+    expect(await service.findOne(2)).toEqual({ id: 2, name: 'Category A' });
   });
 
   it('should update a room category by id', async () => {
     expect(await service.update(1, { name: 'mockCategory' })).toEqual({
-      ...mockCategories[0],
-      name: 'mockCategory',
+      id: 1,
+      name: 'Category A',
     });
   });
 

@@ -25,7 +25,10 @@ export class CategoriesService {
   }
 
   async findOne(id: number) {
-    return await this.categoriesRepo.findOneBy({ id });
+    return await this.categoriesRepo.findOne({
+      where: { id },
+      relations: ['rooms', 'rooms.floor'],
+    });
   }
 
   async findOneBy(key: UpdateCategoryDto) {

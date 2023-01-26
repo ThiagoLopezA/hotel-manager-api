@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Room } from './room.entity';
 
 @Entity()
@@ -15,6 +15,6 @@ export class Category {
   @Column({ type: 'float' })
   price: number;
 
-  @OneToOne(() => Room)
-  room: Room;
+  @OneToMany(() => Room, (room) => room.category)
+  rooms: Room[];
 }
