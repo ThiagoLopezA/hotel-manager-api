@@ -7,19 +7,29 @@ import { RoomsService } from './rooms.service';
 describe('RoomsService', () => {
   let service: RoomsService;
 
+  const mockRooms = [
+    {
+      id: 1,
+      number: 1,
+      floor: {
+        id: 1,
+        number: 1,
+      },
+    },
+  ];
+
   const mockRoomsRepository = {
     create: jest.fn().mockImplementation((dto) => dto),
     save: jest
       .fn()
-      .mockImplementation((dto) => Promise.resolve({ id: 1, ...dto })),
-    find: jest.fn().mockImplementation(() => Promise.resolve([])),
+      .mockImplementation((dto) => Promise.resolve({ id: 2, ...dto })),
+    find: jest.fn().mockImplementation(() => Promise.resolve(mockRooms[0])),
     findOne: jest.fn().mockImplementation(({ where }) => {
       const id = where.id;
       const number = where.number;
-      const floor = { id: 1, number: 1 };
 
-      if (number) return { id: 1, number, floor };
-      else return { id, number: 1, floor };
+      if (number) return mockRooms.find((item) => item.number === number);
+      else return mockRooms.find((item) => item.id === id);
     }),
     delete: jest.fn().mockImplementation((id) => {
       return { id, number: 1 };
@@ -59,9 +69,9 @@ describe('RoomsService', () => {
   });
 
   it('should crate a new room and return it', async () => {
-    expect(await service.create({ number: 1, floorId: 1 })).toEqual({
-      id: 1,
-      number: 1,
+    expect(await service.create({ number: 2, floorId: 1 })).toEqual({
+      id: 2,
+      number: 2,
       floorId: 1,
       floor: {
         id: 1,
@@ -70,8 +80,8 @@ describe('RoomsService', () => {
     });
   });
 
-  it('should find an empty array', async () => {
-    expect(await service.findAll()).toEqual([]);
+  it('should find all rooms', async () => {
+    expect(await service.findAll()).toEqual(mockRooms[0]);
   });
 
   it('should find a room by id', async () => {

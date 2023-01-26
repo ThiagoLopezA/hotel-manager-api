@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -48,6 +52,15 @@ export class RoomsService {
       const floor = await this.floorsRepo.findOneBy({ id: changes.floorId });
       if (!floor) throw new NotFoundException('Floor not found');
       room.floor = floor;
+    }
+    if (changes.number) {
+      const roomAlreadyExits = await this.roomsRepo.findOne({
+        where: {
+          number: changes.number,
+        },
+      });
+      if (roomAlreadyExits)
+        throw new ConflictException(`Room #${changes.number} already exits`);
     }
     this.roomsRepo.merge(room, changes);
     return this.roomsRepo.save(room);
