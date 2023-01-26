@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Category } from './category.entity';
 import { Floor } from './floor.entity';
 
 @Entity()
@@ -12,6 +20,7 @@ export class Room {
   @ManyToOne(() => Floor, (floor) => floor.rooms)
   floor: Floor;
 
-  // @Column({ type: 'int' })
-  // categoryId: number;
+  @OneToOne(() => Category)
+  @JoinColumn()
+  category: Category;
 }

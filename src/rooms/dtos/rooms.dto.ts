@@ -14,10 +14,11 @@ export class CreateRoomDto {
   @ApiProperty()
   readonly floorId: number;
 
-  // @IsNumber()
-  // @IsPositive()
-  // @IsNotEmpty()
-  // readonly categoryId: number;
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly categoryId: number;
 }
 
 export class UpdateRoomDto extends PartialType(CreateRoomDto) {}
