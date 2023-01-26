@@ -4,7 +4,10 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  BeforeInsert,
 } from 'typeorm';
+
+import * as argon from 'argon2';
 import { Role } from './role.entity';
 
 @Entity()
@@ -27,4 +30,12 @@ export class User {
   @OneToOne(() => Role, (role) => role.users)
   @JoinColumn()
   role: Role;
+
+  @BeforeInsert()
+  async hashPassword() {
+    const text = this.password;
+    this.password = await argon.hash(text, {
+      type: argon.argon2id,
+    });
+  }
 }
