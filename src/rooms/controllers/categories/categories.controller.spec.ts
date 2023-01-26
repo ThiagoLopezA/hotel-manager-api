@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from '../../services/categories/categories.service';
-import { RoomCategory } from '../../entities/room-category.entity';
+import { Category } from '../../entities/category.entity';
 
 describe('CategoriesController', () => {
   let controller: CategoriesController;
@@ -46,7 +46,7 @@ describe('CategoriesController', () => {
 
   describe('Create method', () => {
     it('should create a category', async () => {
-      const newCategory: RoomCategory = {
+      const newCategory: Category = {
         id: 2,
         name: 'B',
         description: 'bla',

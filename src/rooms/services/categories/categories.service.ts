@@ -2,20 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { RoomCategory } from '../../entities/room-category.entity';
+import { Category } from '../../entities/category.entity';
 import {
-  CreateRoomCategoryDto,
-  UpdateRoomCategoryDto,
-} from '../../dtos/rooms-categories.dto';
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../../dtos/categories.dto';
 
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectRepository(RoomCategory)
-    private categoriesRepo: Repository<RoomCategory>,
+    @InjectRepository(Category)
+    private categoriesRepo: Repository<Category>,
   ) {}
 
-  async create(payload: CreateRoomCategoryDto) {
+  async create(payload: CreateCategoryDto) {
     const newCategory = this.categoriesRepo.create(payload);
     return await this.categoriesRepo.save(newCategory);
   }
@@ -28,14 +28,14 @@ export class CategoriesService {
     return await this.categoriesRepo.findOneBy({ id });
   }
 
-  async findOneBy(key: UpdateRoomCategoryDto) {
+  async findOneBy(key: UpdateCategoryDto) {
     return await this.categoriesRepo.findOneBy(key);
   }
 
-  async update(id: number, changes: UpdateRoomCategoryDto) {
+  async update(id: number, changes: UpdateCategoryDto) {
     const category = await this.findOne(id);
     this.categoriesRepo.merge(category, changes);
-    return this.categoriesRepo.save(category);
+    return await this.categoriesRepo.save(category);
   }
 
   async delete(id: number) {

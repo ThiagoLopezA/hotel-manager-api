@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoriesService } from './categories.service';
-import { RoomCategory } from '../../entities/room-category.entity';
+import { Category } from '../../entities/category.entity';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -37,7 +37,7 @@ describe('CategoriesService', () => {
       providers: [
         CategoriesService,
         {
-          provide: getRepositoryToken(RoomCategory),
+          provide: getRepositoryToken(Category),
           useValue: mockCategoriesRepository,
         },
       ],

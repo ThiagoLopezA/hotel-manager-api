@@ -11,9 +11,9 @@ import {
 
 import { CategoriesService } from '../../services/categories/categories.service';
 import {
-  CreateRoomCategoryDto,
-  UpdateRoomCategoryDto,
-} from '../../dtos/rooms-categories.dto';
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../../dtos/categories.dto';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
 
@@ -22,7 +22,7 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Post()
-  async createCategory(@Body() payload: CreateRoomCategoryDto) {
+  async createCategory(@Body() payload: CreateCategoryDto) {
     const categoryAlreadyExits = await this.categoriesService.findOneBy({
       name: payload.name,
     });
@@ -55,7 +55,7 @@ export class CategoriesController {
   @Put(':id')
   async updateCategory(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateRoomCategoryDto,
+    @Body() payload: UpdateCategoryDto,
   ) {
     const category = await this.categoriesService.findOne(id);
     if (!category)
@@ -63,7 +63,7 @@ export class CategoriesController {
         Code.NOT_FOUND_ERROR.code,
         Code.NOT_FOUND_ERROR.message,
       );
-    const updated = this.categoriesService.update(category.id, payload);
+    const updated = await this.categoriesService.update(category.id, payload);
     return ApiResponse.success(updated);
   }
 
