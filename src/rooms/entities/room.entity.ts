@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Booking } from 'src/bookings/entities/booking.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Category } from './category.entity';
 import { Floor } from './floor.entity';
 
@@ -15,4 +22,7 @@ export class Room {
 
   @ManyToOne(() => Category, (category) => category.rooms)
   category: Category;
+
+  @OneToMany(() => Booking, (booking) => booking.room)
+  bookings: Booking[];
 }
