@@ -1,23 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Room } from '../../entities/room.entity';
-import { RoomCategory } from '../../entities/room-category.entity';
 import { Floor } from '../../entities/floor.entity';
+import { Category } from '../../entities/category.entity';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
-import {
-  CreateRoomCategoryDto,
-  UpdateRoomCategoryDto,
-} from '../../dtos/rooms-categories.dto';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room) private roomsRepo: Repository<Room>,
     @InjectRepository(Floor) private floorsRepo: Repository<Floor>,
-    @InjectRepository(RoomCategory)
-    private roomCategoryRepo: Repository<RoomCategory>,
+    @InjectRepository(Category) private categoriesRepo: Repository<Category>,
   ) {}
 
   async create(data: CreateRoomDto): Promise<Room> {
@@ -27,17 +26,24 @@ export class RoomsService {
       if (!floor) throw new NotFoundException('Floor not found');
       newRoom.floor = floor;
     }
+    if (data.categoryId) {
+      const category = await this.categoriesRepo.findOneBy({
+        id: data.categoryId,
+      });
+      if (!category) throw new NotFoundException('Category not found');
+      newRoom.category = category;
+    }
     return await this.roomsRepo.save(newRoom);
   }
 
   async findAll(): Promise<Room[]> {
-    return await this.roomsRepo.find({ relations: ['floor'] });
+    return await this.roomsRepo.find({ relations: ['floor', 'category'] });
   }
 
   async findOne(id: number): Promise<Room> {
     const room = await this.roomsRepo.findOne({
       where: { id },
-      relations: ['floor'],
+      relations: ['floor', 'category'],
     });
     return room;
   }
@@ -45,16 +51,32 @@ export class RoomsService {
   async findOneBy(key: UpdateRoomDto): Promise<Room> {
     const room = await this.roomsRepo.findOne({
       where: key,
-      relations: ['floor'],
+      relations: ['floor', 'category'],
     });
     return room;
   }
 
   async update(room: Room, changes: UpdateRoomDto): Promise<Room> {
+    if (changes.number) {
+      const roomAlreadyExits = await this.roomsRepo.findOne({
+        where: {
+          number: changes.number,
+        },
+      });
+      if (roomAlreadyExits)
+        throw new ConflictException(`Room #${changes.number} already exits`);
+    }
     if (changes.floorId) {
       const floor = await this.floorsRepo.findOneBy({ id: changes.floorId });
       if (!floor) throw new NotFoundException('Floor not found');
       room.floor = floor;
+    }
+    if (changes.categoryId) {
+      const category = await this.categoriesRepo.findOneBy({
+        id: changes.categoryId,
+      });
+      if (!category) throw new NotFoundException('Category not found');
+      room.category = category;
     }
     this.roomsRepo.merge(room, changes);
     return this.roomsRepo.save(room);
@@ -62,31 +84,5 @@ export class RoomsService {
 
   async delete(id: number) {
     return await this.roomsRepo.delete(id);
-  }
-
-  // _____ROOM_CATEGORY:
-  async createCategory(payload: CreateRoomCategoryDto) {
-    const category = this.roomCategoryRepo.create(payload);
-    return await this.roomCategoryRepo.save(category);
-  }
-
-  async findAllCategories() {
-    return await this.roomCategoryRepo.find();
-  }
-
-  async findOneCategory(id: number) {
-    const category = await this.roomCategoryRepo.findOneBy({ id });
-    if (!category) throw new NotFoundException('Category not found');
-    return category;
-  }
-
-  async updateCategory(id: number, changes: UpdateRoomCategoryDto) {
-    const category = await this.findOneCategory(id);
-    this.roomCategoryRepo.merge(category, changes);
-    return this.roomCategoryRepo.save(category);
-  }
-
-  async deleteCategory(id: number) {
-    return await this.roomCategoryRepo.delete(id);
   }
 }

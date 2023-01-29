@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Category } from './category.entity';
 import { Floor } from './floor.entity';
 
 @Entity()
@@ -12,6 +13,6 @@ export class Room {
   @ManyToOne(() => Floor, (floor) => floor.rooms)
   floor: Floor;
 
-  // @Column({ type: 'int' })
-  // categoryId: number;
+  @ManyToOne(() => Category, (category) => category.rooms)
+  category: Category;
 }

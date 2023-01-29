@@ -12,10 +12,6 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { RoomsService } from '../../services/rooms/rooms.service';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
-import {
-  CreateRoomCategoryDto,
-  UpdateRoomCategoryDto,
-} from '../../dtos/rooms-categories.dto';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
 
@@ -38,25 +34,10 @@ export class RoomsController {
     return ApiResponse.created(newRoom);
   }
 
-  @Post('/categories')
-  createCategory(@Body() payload: CreateRoomCategoryDto) {
-    return this.roomsService.createCategory(payload);
-  }
-
   @Get()
   async getRooms() {
     const rooms = await this.roomsService.findAll();
     return ApiResponse.success(rooms);
-  }
-
-  @Get('/categories')
-  async getCategories() {
-    return await this.roomsService.findAllCategories();
-  }
-
-  @Get('/categories/:id')
-  getCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.roomsService.findOneCategory(id);
   }
 
   @Get('/:id')
@@ -68,14 +49,6 @@ export class RoomsController {
         Code.NOT_FOUND_ERROR.message,
       );
     return ApiResponse.success(room);
-  }
-
-  @Put('/categories/:id')
-  updateCategory(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateRoomCategoryDto,
-  ) {
-    return this.roomsService.updateCategory(id, payload);
   }
 
   @Put('/:id')
@@ -91,11 +64,6 @@ export class RoomsController {
       );
     const updatedRoom = await this.roomsService.update(room, payload);
     return ApiResponse.success(updatedRoom);
-  }
-
-  @Delete('/categories/:id')
-  deleteCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.roomsService.deleteCategory(id);
   }
 
   @Delete('/:id')

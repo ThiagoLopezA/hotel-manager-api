@@ -15,14 +15,6 @@ describe('RoomsController', () => {
       },
     },
   ];
-  const mockCategories = [
-    {
-      id: 1,
-      name: 'mockCategory',
-      description: 'a mocked category',
-      price: 666.66,
-    },
-  ];
 
   const mockRoomsService = {
     create: jest.fn((dto) => ({ id: 3, ...dto })),
@@ -35,14 +27,6 @@ describe('RoomsController', () => {
       return { ...room, ...dto };
     }),
     delete: jest.fn(() => ({ affected: 1, raw: [] })),
-    createCategory: jest.fn((dto) => ({ ...dto, id: 1 })),
-    findAllCategories: jest.fn(() => mockCategories),
-    findOneCategory: jest.fn((id) => mockCategories.find((e) => e.id === id)),
-    deleteCategory: jest.fn((id) => mockCategories.find((e) => e.id === id)),
-    updateCategory: jest.fn((id, changes) => {
-      const category = mockCategories.find((e) => e.id === id);
-      return { ...category, ...changes };
-    }),
   };
 
   beforeEach(async () => {
@@ -63,13 +47,14 @@ describe('RoomsController', () => {
 
   describe('Create method', () => {
     it('should create a room', async () => {
-      const body = { number: 4, floorId: 2 };
+      const body = { number: 4, floorId: 2, categoryId: 1 };
       const result = await controller.createRoom(body);
       expect(result.code).toEqual(201);
       expect(result.data).toEqual({
         id: expect.any(Number),
         number: body.number,
         floorId: body.floorId,
+        categoryId: body.categoryId,
       });
       expect(mockRoomsService.create).toBeCalledWith(body);
     });
@@ -109,54 +94,6 @@ describe('RoomsController', () => {
       const result = await controller.deleteRoom(room.id);
       expect(result.data).toEqual(room);
       expect(mockRoomsService.delete).toBeCalledWith(room.id);
-    });
-  });
-
-  describe('Create category method', () => {
-    it('should create a category', async () => {
-      expect(await controller.createCategory(mockCategories[0])).toEqual(
-        mockCategories[0],
-      );
-      expect(mockRoomsService.createCategory).toBeCalled();
-    });
-  });
-
-  describe('Get all category method', () => {
-    it('should get all categories', async () => {
-      expect(await controller.getCategories()).toEqual(mockCategories);
-      expect(mockRoomsService.findAllCategories).toBeCalled();
-    });
-  });
-
-  describe('Get one category method', () => {
-    it('should get one category', async () => {
-      expect(await controller.getCategory(1)).toEqual(mockCategories[0]);
-      expect(mockRoomsService.findOneCategory).toBeCalled();
-    });
-  });
-
-  describe('Update category method', () => {
-    it('should update a category', async () => {
-      expect(
-        await controller.updateCategory(1, {
-          name: 'updatedCategory',
-          description: 'an updated category',
-          price: 999.99,
-        }),
-      ).toEqual({
-        id: 1,
-        name: 'updatedCategory',
-        description: 'an updated category',
-        price: 999.99,
-      });
-      expect(mockRoomsService.updateCategory).toBeCalled();
-    });
-  });
-
-  describe('Delete category method', () => {
-    it('should delete a category', async () => {
-      expect(await controller.deleteCategory(1)).toEqual(mockCategories[0]);
-      expect(mockRoomsService.deleteCategory).toBeCalled();
     });
   });
 });

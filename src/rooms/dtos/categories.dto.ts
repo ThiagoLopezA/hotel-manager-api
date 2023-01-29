@@ -1,7 +1,7 @@
 import { IsNumber, IsPositive, IsNotEmpty, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
 
-export class CreateRoomCategoryDto {
+export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
@@ -16,4 +16,4 @@ export class CreateRoomCategoryDto {
   readonly price: number;
 }
 
-export class UpdateRoomCategoryDto extends PartialType(CreateRoomCategoryDto) {}
+export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {}
