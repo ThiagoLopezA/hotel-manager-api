@@ -1,16 +1,21 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsDate } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsDateString,
+} from 'class-validator';
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateBookingDto {
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @ApiProperty()
-  readonly checkin: Date;
+  readonly checkIn: Date;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @ApiProperty()
-  readonly checkout: Date;
+  readonly checkOut: Date;
 
   @IsNumber()
   @IsPositive()

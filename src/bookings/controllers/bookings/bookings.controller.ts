@@ -12,13 +12,78 @@ import {
   CreateBookingDto,
   UpdateBookingDto,
 } from 'src/bookings/dtos/bookings.dto';
-import { BookingsService } from 'src/bookings/services/bookings/bookings.service';
+import { BookingsService } from '../../services/bookings/bookings.service';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
+import {
+  CreateBookingStateDto,
+  UpdateBookingStateDto,
+} from 'src/bookings/dtos/bookings-state.dto';
 
 @Controller('bookings')
 export class BookingsController {
   constructor(private bookingsService: BookingsService) {}
+
+  // Bookings State
+  @Get('states')
+  async getBookingsStates() {
+    const states = await this.bookingsService.findAllStates();
+    return ApiResponse.success(states);
+  }
+
+  @Get('states/:id')
+  async getBookingState(@Param('id', ParseIntPipe) id: number) {
+    const state = await this.bookingsService.findOneState({ id });
+    if (!state)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    return ApiResponse.success(state);
+  }
+
+  @Post('states')
+  async createState(@Body() data: CreateBookingStateDto) {
+    const stateAlreadyExists = await this.bookingsService.findOneState({
+      name: data.name,
+    });
+    if (stateAlreadyExists)
+      return ApiResponse.error(
+        Code.ENTITY_ALREADY_EXISTS_ERROR.code,
+        Code.ENTITY_ALREADY_EXISTS_ERROR.message,
+      );
+    const newstate = await this.bookingsService.createState(data);
+    return ApiResponse.created(newstate);
+  }
+
+  @Put('states/:id')
+  async updateState(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() changes: UpdateBookingStateDto,
+  ) {
+    const state = await this.bookingsService.findOneState({ id });
+    if (!state)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    const updated = await this.bookingsService.updateState(state.id, changes);
+    return ApiResponse.success(updated);
+  }
+
+  @Delete('states/:id')
+  async deleteState(@Param('id', ParseIntPipe) id: number) {
+    const state = await this.bookingsService.findOneState({ id });
+    if (!state)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    await this.bookingsService.deleteState(state.id);
+    return ApiResponse.success(state);
+  }
+
+  // Bookings
 
   @Get()
   async getBookings() {
@@ -38,8 +103,8 @@ export class BookingsController {
   }
 
   @Post()
-  create(@Body() data: CreateBookingDto) {
-    const newBooking = this.bookingsService.create(data);
+  async create(@Body() data: CreateBookingDto) {
+    const newBooking = await this.bookingsService.create(data);
     return ApiResponse.created(newBooking);
   }
 

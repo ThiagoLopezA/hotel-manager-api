@@ -14,19 +14,19 @@ export class Booking {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  checkin: Date;
+  @Column({ type: 'timestamp', nullable: false })
+  checkIn: Date;
 
-  @Column()
-  checkout: Date;
-
-  @ManyToOne(() => Room, (room) => room.bookings)
-  @JoinColumn({ name: 'room_id' })
-  room: Room;
+  @Column({ type: 'timestamp', nullable: false })
+  checkOut: Date;
 
   @ManyToOne(() => BookingState, (state) => state.bookings)
   @JoinColumn({ name: 'state_id' })
   state: BookingState;
+
+  @ManyToOne(() => Room, (room) => room.bookings)
+  @JoinColumn({ name: 'room_id' })
+  room: Room;
 
   // client: Client;
 

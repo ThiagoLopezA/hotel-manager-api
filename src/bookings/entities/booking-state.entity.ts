@@ -1,6 +1,7 @@
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Booking } from './booking.entity';
 
+@Entity()
 export class BookingState {
   @PrimaryGeneratedColumn()
   id: number;
