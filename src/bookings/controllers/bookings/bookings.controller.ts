@@ -8,17 +8,14 @@ import {
   ParseIntPipe,
   Body,
 } from '@nestjs/common';
-import {
-  CreateBookingDto,
-  UpdateBookingDto,
-} from 'src/bookings/dtos/bookings.dto';
+import { CreateBookingDto, UpdateBookingDto } from '../../dtos/bookings.dto';
 import { BookingsService } from '../../services/bookings/bookings.service';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
 import {
   CreateBookingStateDto,
   UpdateBookingStateDto,
-} from 'src/bookings/dtos/bookings-state.dto';
+} from '../../dtos/bookings-state.dto';
 
 @Controller('bookings')
 export class BookingsController {

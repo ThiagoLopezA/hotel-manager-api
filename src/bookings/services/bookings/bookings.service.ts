@@ -1,16 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import {
   CreateBookingStateDto,
   UpdateBookingStateDto,
-} from 'src/bookings/dtos/bookings-state.dto';
-import {
-  CreateBookingDto,
-  UpdateBookingDto,
-} from 'src/bookings/dtos/bookings.dto';
-import { BookingState } from 'src/bookings/entities/booking-state.entity';
-import { RoomsService } from 'src/rooms/services/rooms/rooms.service';
-import { Repository } from 'typeorm';
+} from '../../dtos/bookings-state.dto';
+import { CreateBookingDto, UpdateBookingDto } from '../../dtos/bookings.dto';
+import { BookingState } from '../../entities/booking-state.entity';
+import { RoomsService } from '../../../rooms/services/rooms/rooms.service';
 import { Booking } from '../../entities/booking.entity';
 
 @Injectable()
