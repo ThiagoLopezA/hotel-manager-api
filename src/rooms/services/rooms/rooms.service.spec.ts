@@ -140,6 +140,7 @@ describe('RoomsService', () => {
         price: 100,
         rooms: [],
       },
+      bookings: [],
     };
     expect(await service.update(oldRoom, { number: 3 })).toEqual(oldRoom);
   });

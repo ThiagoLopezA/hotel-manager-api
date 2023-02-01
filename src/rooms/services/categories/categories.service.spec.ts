@@ -20,14 +20,10 @@ describe('CategoriesService', () => {
     findOneBy: jest
       .fn()
       .mockImplementation(({ id }) => mockCategories.find((c) => c.id === id)),
-    merge: jest.fn().mockImplementation((category, changes) => {
-      console.log(category, changes);
-
-      return {
-        ...category,
-        ...changes,
-      };
-    }),
+    merge: jest.fn().mockImplementation((category, changes) => ({
+      ...category,
+      ...changes,
+    })),
     delete: jest.fn().mockImplementation((id) => {
       return mockCategories.find((c) => c.id === id);
     }),

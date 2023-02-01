@@ -8,8 +8,8 @@ import {
 } from '../../dtos/bookings-state.dto';
 import { CreateBookingDto, UpdateBookingDto } from '../../dtos/bookings.dto';
 import { BookingState } from '../../entities/booking-state.entity';
-import { RoomsService } from '../../../rooms/services/rooms/rooms.service';
 import { Booking } from '../../entities/booking.entity';
+import { Room } from '../../../rooms/entities/room.entity';
 
 @Injectable()
 export class BookingsService {
@@ -17,7 +17,7 @@ export class BookingsService {
     @InjectRepository(Booking) private bookingsRepo: Repository<Booking>,
     @InjectRepository(BookingState)
     private statesRepo: Repository<BookingState>,
-    private roomsService: RoomsService,
+    @InjectRepository(Room) private roomsRepo: Repository<Room>,
   ) {}
 
   async findAll() {
@@ -39,7 +39,10 @@ export class BookingsService {
     if (!state) throw new NotFoundException('stateId not found');
     newBooking.state = state;
 
-    const room = await this.roomsService.findOne(data.roomId);
+    const room = await this.roomsRepo.findOne({
+      where: { id: data.roomId },
+      relations: ['floor', 'category'],
+    });
     if (!room) throw new NotFoundException('roomId not found');
     newBooking.room = room;
 
