@@ -12,7 +12,10 @@ describe('BookingsService', () => {
     { id: 1, checkIn: new Date(), checkOut: new Date(), roomId: 1, stateId: 1 },
   ];
   const mockBookingState = [{ id: 1, name: 'pendiente', bookings: [] }];
-  const mockRooms = [{ id: 1, number: 1, floor: { id: 1, number: 1 } }];
+  const mockRooms = [
+    { id: 1, number: 1, floor: { id: 1, number: 1 } },
+    { id: 2, number: 2, floor: { id: 1, number: 1 } },
+  ];
 
   const mockBookingsRepository = {
     create: jest.fn().mockImplementation((dto) => dto),
