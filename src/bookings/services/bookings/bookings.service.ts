@@ -51,6 +51,18 @@ export class BookingsService {
 
   async update(id: number, changes: UpdateBookingDto) {
     const booking = await this.bookingsRepo.findOne({ where: { id } });
+    if (changes.stateId) {
+      const state = await this.findOneState({ id: changes.stateId });
+      if (!state) throw new NotFoundException('stateId not found');
+      booking.state = state;
+    }
+    if (changes.roomId) {
+      const room = await this.roomsRepo.findOne({
+        where: { id: changes.roomId },
+      });
+      if (!room) throw new NotFoundException('Room not found');
+      booking.room = room;
+    }
     this.bookingsRepo.merge(booking, changes);
     return await this.bookingsRepo.save(booking);
   }

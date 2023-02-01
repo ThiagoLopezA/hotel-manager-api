@@ -15,6 +15,6 @@ import { CategoriesController } from './controllers/categories/categories.contro
   imports: [TypeOrmModule.forFeature([Room, Floor, Category])],
   controllers: [RoomsController, FloorsController, CategoriesController],
   providers: [RoomsService, FloorsService, CategoriesService],
-  exports: [RoomsService],
+  exports: [TypeOrmModule],
 })
 export class RoomsModule {}
