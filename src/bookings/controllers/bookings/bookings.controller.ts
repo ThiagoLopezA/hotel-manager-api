@@ -8,6 +8,8 @@ import {
   ParseIntPipe,
   Body,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { CreateBookingDto, UpdateBookingDto } from '../../dtos/bookings.dto';
 import { BookingsService } from '../../services/bookings/bookings.service';
 import { ApiResponse } from '../../../common/api/apiResponse';
@@ -17,6 +19,7 @@ import {
   UpdateBookingStateDto,
 } from '../../dtos/bookings-state.dto';
 
+@ApiTags('Bookings')
 @Controller('bookings')
 export class BookingsController {
   constructor(private bookingsService: BookingsService) {}
