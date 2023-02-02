@@ -75,4 +75,15 @@ export class FloorsController {
     const updated = await this.floorsService.update(id, body);
     return ApiResponse.success(updated);
   }
+
+  @Get(':id/rooms')
+  async getRooms(@Param('id', ParseIntPipe) id: number) {
+    const { rooms } = await this.floorsService.findOne({ id });
+    if (!rooms)
+      return ApiResponse.error(
+        Code.NOT_FOUND_ERROR.code,
+        Code.NOT_FOUND_ERROR.message,
+      );
+    return ApiResponse.success(rooms);
+  }
 }
