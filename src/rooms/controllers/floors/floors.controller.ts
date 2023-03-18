@@ -7,13 +7,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateFloorDto, UpdateFloorDto } from '../../dtos/floors.dto';
 import { FloorsService } from '../../services/floors/floors.service';
 import { ApiResponse, Code } from '../../../common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Floors')
+@UseGuards(JwtAuthGuard)
 @Controller('floors')
 export class FloorsController {
   constructor(private floorsService: FloorsService) {}

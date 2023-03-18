@@ -7,13 +7,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiResponse, Code } from '../../../common';
 import { CreateUserDto, UpdateUserDto } from '../../dtos/users.dto';
 import { UsersService } from '../../services/users/users.service';
 
 @ApiTags('User')
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -46,7 +49,7 @@ export class UsersController {
       );
     }
     const newUser = await this.usersService.create(body);
-    return ApiResponse.success(newUser);
+    return ApiResponse.created(newUser);
   }
 
   @Delete(':id')

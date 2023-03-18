@@ -12,7 +12,10 @@ export class UsersService {
   }
 
   async findOne(params: object) {
-    const user = await this.userRepo.findOneBy(params);
+    const user = await this.userRepo.findOne({
+      where: params,
+      relations: ['role'],
+    });
     return user;
   }
 
