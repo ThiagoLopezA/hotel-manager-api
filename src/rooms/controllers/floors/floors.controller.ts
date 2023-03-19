@@ -13,7 +13,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateFloorDto, UpdateFloorDto } from '../../dtos/floors.dto';
 import { FloorsService } from '../../services/floors/floors.service';
 import { ApiResponse, Code } from '../../../common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 
 @ApiTags('Floors')
 @UseGuards(JwtAuthGuard)

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../../../users/services/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { User } from 'src/users/entities/user.entity';
-import { PayloadToken } from 'src/auth/entities/token.entity';
+import { User } from '../../../users/entities/user.entity';
+import { PayloadToken } from '../../entities/token.entity';
 
 @Injectable()
 export class AuthService {

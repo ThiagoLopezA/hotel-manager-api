@@ -15,7 +15,7 @@ import { RoomsService } from '../../services/rooms/rooms.service';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 
 @ApiTags('Rooms')
 @UseGuards(JwtAuthGuard)

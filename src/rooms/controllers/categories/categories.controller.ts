@@ -17,7 +17,7 @@ import {
 } from '../../dtos/categories.dto';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('categories')
