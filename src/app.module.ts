@@ -9,6 +9,7 @@ import { enviroments } from './enviroments';
 import { DatabaseModule } from './database/database.module';
 import { ClientsModule } from './clients/clients.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -29,6 +30,7 @@ import config from './config';
     }),
     ClientsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

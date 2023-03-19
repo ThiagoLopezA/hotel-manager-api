@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -14,8 +15,10 @@ import { RoomsService } from '../../services/rooms/rooms.service';
 import { CreateRoomDto, UpdateRoomDto } from '../../dtos/rooms.dto';
 import { ApiResponse } from '../../../common/api/apiResponse';
 import { Code } from '../../../common/code/code';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 
 @ApiTags('Rooms')
+@UseGuards(JwtAuthGuard)
 @Controller('rooms')
 export class RoomsController {
   constructor(private roomsService: RoomsService) {}
